@@ -44,12 +44,12 @@ function AdminDashboard() {
   }
 
   return (
-    <main className="mx-auto w-[calc(100%-80px)] max-w-[1152px] py-10 max-lg:w-[calc(100%-48px)] max-lg:py-7 max-sm:w-[calc(100%-32px)]">
+    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       {/* Header */}
-      <div className="mb-7 flex flex-wrap items-center justify-between gap-4">
+      <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">{user.name} Workspace</h1>
-          <p className="mt-1 text-sm text-slate-500">{user.department}</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900">{user.name} Workspace</h1>
+          <p className="mt-0.5 text-xs sm:text-sm text-slate-500">{user.department}</p>
         </div>
         <button
           type="button"
@@ -57,7 +57,7 @@ function AdminDashboard() {
             setEditingAssignment(null)
             setModalOpen(true)
           }}
-          className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-2 text-xs font-semibold text-white shadow-xs hover:bg-indigo-700"
+          className="inline-flex self-start sm:self-center items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-2 text-xs font-semibold text-white shadow-2xs hover:bg-indigo-700"
         >
           <Plus size={15} />
           Create Assignment
@@ -65,14 +65,14 @@ function AdminDashboard() {
       </div>
 
       {/* Metrics */}
-      <section className="grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-sm:gap-2.5" aria-label="Professor summary">
+      <section className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-4" aria-label="Professor summary">
         {cards.map((c) => (
           <SummaryCard key={c.label} {...c} />
         ))}
       </section>
 
       {/* Search */}
-      <div className="mt-7 flex items-center rounded-xl border border-slate-200 bg-white p-3 shadow-xs">
+      <div className="mt-6 flex items-center rounded-xl border border-slate-200 bg-white p-3 shadow-2xs">
         <div className="relative flex-1">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -86,7 +86,7 @@ function AdminDashboard() {
       </div>
 
       {/* Assignment List */}
-      <section className="mt-5 space-y-3.5" aria-label="Created assignments">
+      <section className="mt-5 space-y-3" aria-label="Created assignments">
         {displayedAssignments.length === 0 ? (
           <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-xs text-slate-500">
             {professorAssignments.length === 0 ? 'No assignments created yet.' : 'No assignments match your search.'}
@@ -118,7 +118,7 @@ function AdminDashboard() {
       {/* Delete Confirmation Modal */}
       {deletingAssignment && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
-          <div className="w-full max-w-sm rounded-xl bg-white p-5 shadow-lg">
+          <div className="max-h-[90vh] w-full max-w-sm overflow-y-auto rounded-xl bg-white p-5 shadow-lg">
             <h3 className="text-sm font-bold text-slate-900">Delete Assignment</h3>
             <p className="mt-2 text-xs text-slate-500">
               Are you sure you want to delete <strong className="text-slate-800">"{deletingAssignment.title}"</strong>?

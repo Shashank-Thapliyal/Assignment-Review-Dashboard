@@ -42,7 +42,7 @@ function StudentDashboard() {
   const activeAssignment = studentAssignments.find((a) => a.id === confirmingId)
 
   return (
-    <main className="mx-auto w-[calc(100%-80px)] max-w-[1152px] py-10 max-lg:w-[calc(100%-48px)] max-lg:py-7 max-sm:w-[calc(100%-32px)]">
+    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       {toast && (
         <div className="mb-5 flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs text-emerald-800">
           <span>{toast}</span>
@@ -51,30 +51,30 @@ function StudentDashboard() {
       )}
 
       {/* Header & Overall Progress */}
-      <div className="mb-7 flex flex-wrap items-center justify-between gap-4">
+      <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-slate-900">Welcome, {user.name}</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Welcome, {user.name}</h1>
             <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-semibold text-indigo-700">{user.rollNumber}</span>
           </div>
-          <p className="mt-1 text-sm text-slate-500">{user.department}</p>
+          <p className="mt-0.5 text-xs sm:text-sm text-slate-500">{user.department}</p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 shadow-xs">
+        <div className="self-start rounded-xl border border-slate-200 bg-white px-3.5 py-2 shadow-2xs sm:self-center">
           <span className="text-xs text-slate-400">Overall Progress: </span>
           <strong className="text-xs font-bold text-indigo-600">{progressText}</strong>
         </div>
       </div>
 
       {/* Metrics */}
-      <section className="grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-sm:gap-2.5" aria-label="Student summary">
+      <section className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-4" aria-label="Student summary">
         {cards.map((c) => (
           <SummaryCard key={c.label} {...c} />
         ))}
       </section>
 
       {/* Search & Filter */}
-      <div className="mt-7 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-xs">
-        <div className="relative flex-1 min-w-[200px]">
+      <div className="mt-6 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-2xs sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative flex-1">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
@@ -102,7 +102,7 @@ function StudentDashboard() {
       </div>
 
       {/* Assignment List */}
-      <section className="mt-5 space-y-3.5" aria-label="Allocated assignments">
+      <section className="mt-5 space-y-3" aria-label="Allocated assignments">
         {displayedAssignments.length === 0 ? (
           <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-xs text-slate-500">
             No assignments match your view.
@@ -115,7 +115,7 @@ function StudentDashboard() {
             return (
               <article
                 key={assignment.id}
-                className={`flex flex-col justify-between gap-4 rounded-xl border bg-white p-4 shadow-xs transition sm:flex-row sm:items-center ${
+                className={`flex flex-col justify-between gap-3.5 rounded-xl border bg-white p-4 shadow-2xs transition sm:flex-row sm:items-center ${
                   isOver ? 'border-rose-200 bg-rose-50/15' : 'border-slate-200'
                 }`}
               >
@@ -131,7 +131,7 @@ function StudentDashboard() {
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-slate-500">{assignment.description}</p>
-                  <div className="mt-2.5 flex flex-wrap items-center gap-3.5 text-xs text-slate-500">
+                  <div className="mt-2.5 flex flex-wrap items-center gap-3 text-xs text-slate-500">
                     <span className="flex items-center gap-1">
                       <GraduationCap size={13} className="text-indigo-600" />
                       {getProfessorName(assignment.createdBy)}
@@ -143,7 +143,7 @@ function StudentDashboard() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2.5 self-start sm:self-center">
+                <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100 sm:border-0 sm:pt-0 sm:self-center">
                   {assignment.driveLink && (
                     <a
                       href={assignment.driveLink}
@@ -164,7 +164,7 @@ function StudentDashboard() {
                     <button
                       type="button"
                       onClick={() => setConfirmingId(assignment.id)}
-                      className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-indigo-700"
+                      className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white shadow-2xs hover:bg-indigo-700"
                     >
                       Yes, I have submitted
                     </button>
@@ -179,7 +179,7 @@ function StudentDashboard() {
       {/* Two-Step Confirmation Modal */}
       {confirmingId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
-          <div className="w-full max-w-sm rounded-xl bg-white p-5 shadow-lg">
+          <div className="max-h-[90vh] w-full max-w-sm overflow-y-auto rounded-xl bg-white p-5 shadow-lg">
             <h3 className="text-sm font-bold text-slate-900">Confirm Submission</h3>
             <p className="mt-1 text-xs font-medium text-indigo-600">{activeAssignment?.title}</p>
             <p className="mt-3 text-xs leading-relaxed text-slate-500">

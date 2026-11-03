@@ -15,7 +15,7 @@ function Topbar({ user, onLogout }) {
   }
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6 sm:px-10">
+    <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8">
       <div className="flex items-center gap-3">
         <Brand />
         <span className="hidden text-xs text-slate-400 sm:inline-block border-l border-slate-200 pl-3">
@@ -23,7 +23,7 @@ function Topbar({ user, onLogout }) {
         </span>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
         <button
           type="button"
           onClick={handleReset}
@@ -34,7 +34,7 @@ function Topbar({ user, onLogout }) {
           Reset Demo
         </button>
 
-        <div className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-left text-slate-500">
+        <div className="flex items-center gap-2 rounded-lg px-1.5 py-1 text-left text-slate-500">
           <span className="grid size-8 place-items-center rounded-full bg-indigo-50 text-xs font-bold text-indigo-700">
             {user.initials}
           </span>
@@ -47,7 +47,7 @@ function Topbar({ user, onLogout }) {
         </div>
 
         <button
-          className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:border-slate-300 hover:bg-slate-50 hover:text-indigo-600"
+          className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:border-slate-300 hover:bg-slate-50 hover:text-indigo-600"
           type="button"
           onClick={() => {
             logout()

@@ -1,11 +1,14 @@
-function SummaryCard({ label, icon: Icon, value }) {
+function SummaryCard({ label, icon: Icon, value, description }) {
   return (
-    <article className="rounded-[11px] border border-slate-200 bg-white p-5 shadow-sm max-sm:p-[15px]">
-      <div className="flex items-center justify-between gap-3 text-indigo-600">
-        <p className="m-0 text-[13px] text-slate-500 max-sm:text-xs">{label}</p>
-        <Icon size={18} strokeWidth={1.8} aria-hidden="true" />
+    <article className="rounded-xl border border-slate-200 bg-white p-3.5 sm:p-5 shadow-2xs transition hover:border-slate-300">
+      <div className="flex items-center justify-between gap-2 text-slate-500">
+        <p className="m-0 truncate text-xs sm:text-[13px] font-medium text-slate-500">{label}</p>
+        <span className="grid size-7 sm:size-8 shrink-0 place-items-center rounded-lg bg-indigo-50 text-indigo-600">
+          <Icon size={16} strokeWidth={2} aria-hidden="true" />
+        </span>
       </div>
-      <strong className="mt-4 block text-[27px] font-semibold">{value}</strong>
+      <strong className="mt-2.5 sm:mt-3 block text-xl sm:text-2xl font-bold tracking-tight text-slate-900">{value}</strong>
+      {description && <p className="mt-1 truncate text-[11px] text-slate-400">{description}</p>}
     </article>
   )
 }

@@ -41,8 +41,8 @@ function AssignmentModal({ isOpen, onClose, initialData, onSave }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
-      <div className="w-full max-w-md rounded-xl bg-white p-5 shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-3 sm:p-4">
+      <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl bg-white p-4 sm:p-5 shadow-xl">
         <div className="flex items-center justify-between border-b pb-3">
           <h3 className="text-sm font-bold text-slate-900">{initialData ? 'Edit' : 'Create'} Assignment</h3>
           <button type="button" onClick={onClose} className="rounded p-1 text-slate-400 hover:bg-slate-100">
@@ -77,7 +77,7 @@ function AssignmentModal({ isOpen, onClose, initialData, onSave }) {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-2">
             <div>
               <label className="font-semibold text-slate-700">Due Date</label>
               <input
