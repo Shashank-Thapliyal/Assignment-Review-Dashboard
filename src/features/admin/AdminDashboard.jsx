@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react'
-import { BarChart3, CalendarDays, ClipboardList, GraduationCap, Plus, Search } from 'lucide-react'
-import SummaryCard from '../../components/common/SummaryCard'
+import { Plus, Search } from 'lucide-react'
 import AssignmentCard from './AssignmentCard'
 import AssignmentModal from './AssignmentModal'
 import { useAuth } from '../../hooks/useAuth'
@@ -17,23 +16,12 @@ function AdminDashboard() {
   const [search, setSearch] = useState('')
 
   const professorAssignments = useMemo(() => getAssignmentsForAdmin(assignments, user.id), [assignments, user.id])
-  const assignedStudents = new Set(professorAssignments.flatMap((a) => a.assignedTo)).size
-  const totalSubmissions = submissions.filter((s) => professorAssignments.some((a) => a.id === s.assignmentId)).length
-  const totalAllocations = professorAssignments.reduce((sum, a) => sum + a.assignedTo.length, 0)
-  const completionRate = totalAllocations ? `${Math.round((totalSubmissions / totalAllocations) * 100)}%` : '0%'
 
   const displayedAssignments = useMemo(() => {
     return professorAssignments.filter((a) =>
       a.title.toLowerCase().includes(search.toLowerCase()) || a.description.toLowerCase().includes(search.toLowerCase()),
     )
   }, [professorAssignments, search])
-
-  const cards = [
-    { label: 'Active assignments', icon: ClipboardList, value: professorAssignments.length },
-    { label: 'Enrolled students', icon: GraduationCap, value: assignedStudents },
-    { label: 'Submissions received', icon: CalendarDays, value: totalSubmissions },
-    { label: 'Class completion', icon: BarChart3, value: completionRate },
-  ]
 
   function handleSave(data) {
     if (editingAssignment) {
@@ -44,12 +32,12 @@ function AdminDashboard() {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+    <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
       {/* Header */}
       <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-900">{user.name} Workspace</h1>
-          <p className="mt-0.5 text-xs sm:text-sm text-slate-500">{user.department}</p>
+          <h1 className="text-xl font-bold text-slate-900">{user.name} Dashboard</h1>
+          <p className="mt-0.5 text-xs text-slate-500">Manage Course Assignments</p>
         </div>
         <button
           type="button"
@@ -64,15 +52,8 @@ function AdminDashboard() {
         </button>
       </div>
 
-      {/* Metrics */}
-      <section className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-4" aria-label="Professor summary">
-        {cards.map((c) => (
-          <SummaryCard key={c.label} {...c} />
-        ))}
-      </section>
-
       {/* Search */}
-      <div className="mt-6 flex items-center rounded-xl border border-slate-200 bg-white p-3 shadow-2xs">
+      <div className="flex items-center rounded-xl border border-slate-200 bg-white p-3 shadow-xs">
         <div className="relative flex-1">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input

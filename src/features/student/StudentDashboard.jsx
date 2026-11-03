@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react'
-import { AlertTriangle, BookOpenCheck, CalendarDays, CheckCircle, Clock3, ExternalLink, GraduationCap, Search, X } from 'lucide-react'
-import SummaryCard from '../../components/common/SummaryCard'
+import { CalendarDays, ExternalLink, GraduationCap, Search, X } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useAssignments } from '../../hooks/useAssignments'
 import { getAssignmentsForStudent, getSubmission, isOverdue, formatDate, getProfessorName } from '../../utils/assignmentUtils'
@@ -15,9 +14,8 @@ function StudentDashboard() {
 
   const studentAssignments = useMemo(() => getAssignmentsForStudent(assignments, user.id), [assignments, user.id])
   const submittedCount = studentAssignments.filter((a) => getSubmission(submissions, a.id, user.id)).length
-  const overdueCount = studentAssignments.filter((a) => isOverdue(a.dueDate, !!getSubmission(submissions, a.id, user.id))).length
-  const pendingCount = studentAssignments.length - submittedCount
   const progressText = `${submittedCount} of ${studentAssignments.length} submitted`
+  const progressPercentage = studentAssignments.length ? Math.round((submittedCount / studentAssignments.length) * 100) : 0
 
   const displayedAssignments = useMemo(() => {
     return studentAssignments.filter((a) => {
@@ -32,17 +30,10 @@ function StudentDashboard() {
     })
   }, [studentAssignments, submissions, user.id, search, filter])
 
-  const cards = [
-    { label: 'My assignments', icon: BookOpenCheck, value: studentAssignments.length },
-    { label: 'Submitted', icon: CheckCircle, value: submittedCount },
-    { label: 'Pending', icon: Clock3, value: pendingCount },
-    { label: 'Overdue', icon: AlertTriangle, value: overdueCount },
-  ]
-
   const activeAssignment = studentAssignments.find((a) => a.id === confirmingId)
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+    <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
       {toast && (
         <div className="mb-5 flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs text-emerald-800">
           <span>{toast}</span>
@@ -50,30 +41,27 @@ function StudentDashboard() {
         </div>
       )}
 
-      {/* Header & Overall Progress */}
-      <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+      {/* Header & Overall Progress Indicator */}
+      <div className="mb-6 flex flex-col justify-between gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-xs sm:flex-row sm:items-center">
         <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Welcome, {user.name}</h1>
-            <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-semibold text-indigo-700">{user.rollNumber}</span>
-          </div>
-          <p className="mt-0.5 text-xs sm:text-sm text-slate-500">{user.department}</p>
+          <h1 className="text-xl font-bold text-slate-900">Welcome, {user.name}</h1>
+          <p className="mt-0.5 text-xs text-slate-500">Student Dashboard</p>
         </div>
-        <div className="self-start rounded-xl border border-slate-200 bg-white px-3.5 py-2 shadow-2xs sm:self-center">
-          <span className="text-xs text-slate-400">Overall Progress: </span>
-          <strong className="text-xs font-bold text-indigo-600">{progressText}</strong>
+
+        {/* Overall Progress Indicator ("3 of 5 submitted") */}
+        <div className="flex flex-col gap-1.5 sm:w-60">
+          <div className="flex justify-between text-xs font-medium text-slate-600">
+            <span>Overall Progress</span>
+            <strong className="text-indigo-600">{progressText}</strong>
+          </div>
+          <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+            <div className="h-full rounded-full bg-indigo-600 transition-all" style={{ width: `${progressPercentage}%` }} />
+          </div>
         </div>
       </div>
 
-      {/* Metrics */}
-      <section className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-4" aria-label="Student summary">
-        {cards.map((c) => (
-          <SummaryCard key={c.label} {...c} />
-        ))}
-      </section>
-
       {/* Search & Filter */}
-      <div className="mt-6 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-2xs sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-xs sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -102,10 +90,10 @@ function StudentDashboard() {
       </div>
 
       {/* Assignment List */}
-      <section className="mt-5 space-y-3" aria-label="Allocated assignments">
+      <section className="mt-5 space-y-3" aria-label="My assignments">
         {displayedAssignments.length === 0 ? (
           <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-xs text-slate-500">
-            No assignments match your view.
+            No assignments found.
           </div>
         ) : (
           displayedAssignments.map((assignment) => {
@@ -115,7 +103,7 @@ function StudentDashboard() {
             return (
               <article
                 key={assignment.id}
-                className={`flex flex-col justify-between gap-3.5 rounded-xl border bg-white p-4 shadow-2xs transition sm:flex-row sm:items-center ${
+                className={`flex flex-col justify-between gap-3.5 rounded-xl border bg-white p-4 shadow-xs transition sm:flex-row sm:items-center ${
                   isOver ? 'border-rose-200 bg-rose-50/15' : 'border-slate-200'
                 }`}
               >
@@ -183,7 +171,7 @@ function StudentDashboard() {
             <h3 className="text-sm font-bold text-slate-900">Confirm Submission</h3>
             <p className="mt-1 text-xs font-medium text-indigo-600">{activeAssignment?.title}</p>
             <p className="mt-3 text-xs leading-relaxed text-slate-500">
-              Please confirm that you have uploaded your work to the Google Drive link.
+              Please confirm that you have submitted your work via the Google Drive link.
             </p>
             <div className="mt-4 flex justify-end gap-2">
               <button
