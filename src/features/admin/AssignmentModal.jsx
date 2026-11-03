@@ -4,8 +4,8 @@ import { getUsersByRole } from '../../data/seedData'
 
 const ALL_STUDENTS = getUsersByRole('student')
 
-function AssignmentForm({ initialData, onClose, onSave }) {
-  const [formData, setFormData] = useState({
+function AssignmentModal({ isOpen, onClose, initialData, onSave }) {
+  const [form, setForm] = useState({
     title: initialData?.title || '',
     description: initialData?.description || '',
     dueDate: initialData?.dueDate || '',
@@ -14,27 +14,25 @@ function AssignmentForm({ initialData, onClose, onSave }) {
   })
   const [error, setError] = useState('')
 
+  if (!isOpen) return null
+
   function handleSubmit(e) {
     e.preventDefault()
-    if (!formData.title.trim() || !formData.description.trim() || !formData.dueDate || !formData.driveLink.trim()) {
-      setError('Please fill in all required fields.')
-      return
+    if (!form.title.trim() || !form.description.trim() || !form.dueDate || !form.driveLink.trim()) {
+      return setError('Please fill in all fields.')
     }
-    if (!formData.driveLink.startsWith('http://') && !formData.driveLink.startsWith('https://')) {
-      setError('Drive link must be a valid HTTP or HTTPS URL.')
-      return
+    if (!form.driveLink.startsWith('http://') && !form.driveLink.startsWith('https://')) {
+      return setError('Drive link must start with http:// or https://')
     }
-    if (formData.assignedTo.length === 0) {
-      setError('Please allocate at least one student.')
-      return
+    if (!form.assignedTo.length) {
+      return setError('Please allocate at least one student.')
     }
-
-    onSave(formData)
+    onSave(form)
     onClose()
   }
 
   function toggleStudent(id) {
-    setFormData((prev) => ({
+    setForm((prev) => ({
       ...prev,
       assignedTo: prev.assignedTo.includes(id)
         ? prev.assignedTo.filter((sId) => sId !== id)
@@ -44,92 +42,90 @@ function AssignmentForm({ initialData, onClose, onSave }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
-      <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
+      <div className="w-full max-w-md rounded-xl bg-white p-5 shadow-xl">
         <div className="flex items-center justify-between border-b pb-3">
-          <h3 className="text-base font-bold text-slate-900">
-            {initialData ? 'Edit Assignment' : 'Create Assignment'}
-          </h3>
+          <h3 className="text-sm font-bold text-slate-900">{initialData ? 'Edit' : 'Create'} Assignment</h3>
           <button type="button" onClick={onClose} className="rounded p-1 text-slate-400 hover:bg-slate-100">
             <X size={18} />
           </button>
         </div>
 
-        {error && <p className="mt-3 rounded-lg bg-rose-50 p-2 text-xs text-rose-700">{error}</p>}
+        {error && <p className="mt-2 rounded bg-rose-50 p-2 text-xs text-rose-600">{error}</p>}
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-3.5">
+        <form onSubmit={handleSubmit} className="mt-3 space-y-3 text-xs">
           <div>
-            <label className="block text-xs font-semibold text-slate-700">Title</label>
+            <label className="font-semibold text-slate-700">Title</label>
             <input
               type="text"
               required
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-900 outline-none focus:border-indigo-400"
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-slate-200 p-2 outline-none focus:border-indigo-400"
               placeholder="e.g. Operating Systems — Process Scheduling"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700">Description</label>
+            <label className="font-semibold text-slate-700">Description</label>
             <textarea
               rows={2}
               required
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-900 outline-none focus:border-indigo-400"
-              placeholder="Brief instructions for students..."
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-slate-200 p-2 outline-none focus:border-indigo-400"
+              placeholder="Brief instructions..."
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-700">Due Date</label>
+              <label className="font-semibold text-slate-700">Due Date</label>
               <input
                 type="date"
                 required
-                value={formData.dueDate}
-                onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-900 outline-none focus:border-indigo-400"
+                value={form.dueDate}
+                onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
+                className="mt-1 w-full rounded-lg border border-slate-200 p-2 outline-none focus:border-indigo-400"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700">Google Drive Link</label>
+              <label className="font-semibold text-slate-700">Google Drive Link</label>
               <input
                 type="url"
                 required
+                value={form.driveLink}
+                onChange={(e) => setForm({ ...form, driveLink: e.target.value })}
+                className="mt-1 w-full rounded-lg border border-slate-200 p-2 outline-none focus:border-indigo-400"
                 placeholder="https://drive.google.com/..."
-                value={formData.driveLink}
-                onChange={(e) => setFormData({ ...formData, driveLink: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-900 outline-none focus:border-indigo-400"
               />
             </div>
           </div>
 
           <div>
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-700">Assign to Students ({formData.assignedTo.length})</span>
+            <div className="flex items-center justify-between font-semibold text-slate-700">
+              <span>Assign Students ({form.assignedTo.length})</span>
               <button
                 type="button"
                 onClick={() =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    assignedTo: prev.assignedTo.length === ALL_STUDENTS.length ? [] : ALL_STUDENTS.map((s) => s.id),
-                  }))
+                  setForm({
+                    ...form,
+                    assignedTo: form.assignedTo.length === ALL_STUDENTS.length ? [] : ALL_STUDENTS.map((s) => s.id),
+                  })
                 }
                 className="text-indigo-600 hover:underline"
               >
-                {formData.assignedTo.length === ALL_STUDENTS.length ? 'Clear All' : 'Select All'}
+                {form.assignedTo.length === ALL_STUDENTS.length ? 'Clear' : 'Select All'}
               </button>
             </div>
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
               {ALL_STUDENTS.map((s) => (
                 <button
                   type="button"
                   key={s.id}
                   onClick={() => toggleStudent(s.id)}
-                  className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition ${
-                    formData.assignedTo.includes(s.id)
-                      ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
+                  className={`rounded border px-2.5 py-1 font-medium transition ${
+                    form.assignedTo.includes(s.id)
+                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
                       : 'border-slate-200 bg-white text-slate-600'
                   }`}
                 >
@@ -139,17 +135,17 @@ function AssignmentForm({ initialData, onClose, onSave }) {
             </div>
           </div>
 
-          <div className="mt-5 flex justify-end gap-2 border-t pt-3">
+          <div className="mt-4 flex justify-end gap-2 border-t pt-3">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
+              className="rounded-lg border border-slate-200 px-3 py-1.5 text-slate-600 hover:bg-slate-50"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="rounded-lg bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-indigo-700"
+              className="rounded-lg bg-indigo-600 px-4 py-1.5 font-semibold text-white hover:bg-indigo-700"
             >
               Save Assignment
             </button>
@@ -158,11 +154,6 @@ function AssignmentForm({ initialData, onClose, onSave }) {
       </div>
     </div>
   )
-}
-
-function AssignmentModal({ isOpen, onClose, initialData, onSave }) {
-  if (!isOpen) return null
-  return <AssignmentForm key={initialData?.id || 'new'} initialData={initialData} onClose={onClose} onSave={onSave} />
 }
 
 export default AssignmentModal
