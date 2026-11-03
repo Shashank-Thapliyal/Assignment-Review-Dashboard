@@ -76,6 +76,13 @@ export function AssignmentProvider({ children }) {
     })
   }
 
+  function resetDemoData() {
+    localStorage.setItem(ASSIGNMENTS_KEY, JSON.stringify(seedAssignments))
+    localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(seedSubmissions))
+    setAssignments(seedAssignments)
+    setSubmissions(seedSubmissions)
+  }
+
   return (
     <AssignmentContext.Provider
       value={{
@@ -85,6 +92,7 @@ export function AssignmentProvider({ children }) {
         updateAssignment,
         deleteAssignment,
         submitAssignment,
+        resetDemoData,
       }}
     >
       {children}

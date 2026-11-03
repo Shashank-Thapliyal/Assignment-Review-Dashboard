@@ -23,6 +23,17 @@ export function formatDate(dateString) {
   )
 }
 
+export function formatDateTime(dateString) {
+  if (!dateString) return '—'
+  return new Intl.DateTimeFormat('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(dateString))
+}
+
 export function getCompletionRate(assignment, submissions) {
   if (!assignment.assignedTo.length) return 0
   const count = assignment.assignedTo.filter((sId) => getSubmission(submissions, assignment.id, sId)).length
