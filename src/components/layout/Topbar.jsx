@@ -1,9 +1,9 @@
-import { Menu, RotateCcw } from 'lucide-react'
+import { RotateCcw } from 'lucide-react'
 import Brand from '../common/Brand'
 import { useAuth } from '../../hooks/useAuth'
 import { useAssignments } from '../../hooks/useAssignments'
 
-function Topbar({ user, onOpenNavigation, onLogout }) {
+function Topbar({ user, onLogout }) {
   const { logout } = useAuth()
   const { resetDemoData } = useAssignments()
 
@@ -15,21 +15,11 @@ function Topbar({ user, onOpenNavigation, onLogout }) {
   }
 
   return (
-    <header className="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-6 sm:px-10 max-lg:h-[68px] max-lg:px-4">
-      <div className="flex items-center gap-2">
-        <button
-          className="grid rounded-lg p-2 text-slate-500 hover:bg-slate-50 hover:text-slate-900 lg:hidden"
-          type="button"
-          onClick={onOpenNavigation}
-          aria-label="Open navigation"
-        >
-          <Menu size={20} aria-hidden="true" />
-        </button>
-        <div className="grid lg:hidden">
-          <Brand />
-        </div>
-        <span className="hidden text-xs text-slate-400 sm:inline-block">
-          NIT Warangal Demo Portal
+    <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6 sm:px-10">
+      <div className="flex items-center gap-3">
+        <Brand />
+        <span className="hidden text-xs text-slate-400 sm:inline-block border-l border-slate-200 pl-3">
+          NIT Warangal Portal
         </span>
       </div>
 
@@ -45,12 +35,12 @@ function Topbar({ user, onOpenNavigation, onLogout }) {
         </button>
 
         <div className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-left text-slate-500">
-          <span className="grid size-9 place-items-center rounded-full bg-indigo-50 text-[13px] font-bold text-indigo-700">
+          <span className="grid size-8 place-items-center rounded-full bg-indigo-50 text-xs font-bold text-indigo-700">
             {user.initials}
           </span>
-          <span className="flex flex-col gap-0.5 max-sm:hidden">
-            <strong className="text-[13px] font-semibold text-slate-900">{user.name}</strong>
-            <small className="text-[11px] text-slate-500">
+          <span className="flex flex-col max-sm:hidden">
+            <strong className="text-xs font-semibold text-slate-900">{user.name}</strong>
+            <small className="text-[10px] text-slate-400">
               {user.rollNumber ? `${user.rollNumber} • ${user.department}` : user.department}
             </small>
           </span>
