@@ -12,7 +12,6 @@ function readStorage(key, fallback) {
       localStorage.setItem(key, JSON.stringify(fallback))
       return fallback
     }
-
     const parsed = JSON.parse(stored)
     return Array.isArray(parsed) ? parsed : fallback
   } catch {
@@ -33,18 +32,26 @@ export function AssignmentProvider({ children }) {
     localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(submissions))
   }, [submissions])
 
-  function addSubmission(submission) {
+  function submitAssignment(assignmentId, studentId) {
     setSubmissions((current) => {
-      if (current.some((item) => item.assignmentId === submission.assignmentId && item.studentId === submission.studentId)) {
+      if (current.some((item) => item.assignmentId === assignmentId && item.studentId === studentId)) {
         return current
       }
-
-      return [...current, submission]
+      return [
+        ...current,
+        {
+          id: `submission-${Date.now()}`,
+          assignmentId,
+          studentId,
+          status: 'submitted',
+          submittedAt: new Date().toISOString(),
+        },
+      ]
     })
   }
 
   return (
-    <AssignmentContext.Provider value={{ assignments, submissions, setAssignments, setSubmissions, addSubmission }}>
+    <AssignmentContext.Provider value={{ assignments, submissions, setAssignments, setSubmissions, submitAssignment }}>
       {children}
     </AssignmentContext.Provider>
   )

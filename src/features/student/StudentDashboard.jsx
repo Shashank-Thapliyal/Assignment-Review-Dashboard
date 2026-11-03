@@ -1,4 +1,5 @@
-import { AlertTriangle, BookOpenCheck, CalendarDays, CheckCircle, Clock3, ExternalLink, GraduationCap } from 'lucide-react'
+import { useState } from 'react'
+import { AlertTriangle, BookOpenCheck, CalendarDays, CheckCircle, Clock3, ExternalLink, GraduationCap, X } from 'lucide-react'
 import SummaryCard from '../../components/common/SummaryCard'
 import { useAuth } from '../../hooks/useAuth'
 import { useAssignments } from '../../hooks/useAssignments'
@@ -6,7 +7,9 @@ import { getAssignmentsForStudent, getSubmission, isOverdue, formatDate, getProf
 
 function StudentDashboard() {
   const { user } = useAuth()
-  const { assignments, submissions } = useAssignments()
+  const { assignments, submissions, submitAssignment } = useAssignments()
+  const [confirmingId, setConfirmingId] = useState(null)
+  const [toast, setToast] = useState('')
 
   const studentAssignments = getAssignmentsForStudent(assignments, user.id)
   const submittedCount = studentAssignments.filter((a) => getSubmission(submissions, a.id, user.id)).length
@@ -21,8 +24,17 @@ function StudentDashboard() {
     { label: 'Overdue', icon: AlertTriangle, value: overdueCount },
   ]
 
+  const activeAssignment = studentAssignments.find((a) => a.id === confirmingId)
+
   return (
     <main className="mx-auto w-[calc(100%-80px)] max-w-[1152px] py-10 max-lg:w-[calc(100%-48px)] max-lg:py-7 max-sm:w-[calc(100%-32px)]">
+      {toast && (
+        <div className="mb-5 flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs text-emerald-800">
+          <span>{toast}</span>
+          <button type="button" onClick={() => setToast('')}><X size={14} /></button>
+        </div>
+      )}
+
       {/* Student Profile Header */}
       <div className="mb-7 flex flex-wrap items-center justify-between gap-4">
         <div>
@@ -93,22 +105,72 @@ function StudentDashboard() {
                   </div>
                 </div>
 
-                {assignment.driveLink && (
-                  <a
-                    href={assignment.driveLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 self-start rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 sm:self-center"
-                  >
-                    <ExternalLink size={13} className="text-indigo-600" />
-                    Drive Link
-                  </a>
-                )}
+                <div className="flex items-center gap-3 self-start sm:self-center">
+                  {assignment.driveLink && (
+                    <a
+                      href={assignment.driveLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                    >
+                      <ExternalLink size={13} className="text-indigo-600" />
+                      Drive Link
+                    </a>
+                  )}
+
+                  {isSub ? (
+                    <span className="rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">
+                      ✓ Submitted
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setConfirmingId(assignment.id)}
+                      className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-indigo-700"
+                    >
+                      Yes, I have submitted
+                    </button>
+                  )}
+                </div>
               </article>
             )
           })
         )}
       </section>
+
+      {/* 2-Step Submission Confirmation Dialog */}
+      {confirmingId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
+          <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-5 shadow-lg">
+            <h3 className="text-sm font-bold text-slate-900">Confirm Submission</h3>
+            <p className="mt-1 text-xs font-medium text-indigo-600">{activeAssignment?.title}</p>
+            <p className="mt-3 text-xs text-slate-500 leading-relaxed">
+              This action confirms that you have uploaded your work to the Google Drive folder. ARD does not host or verify files directly.
+            </p>
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setConfirmingId(null)}
+                className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  submitAssignment(confirmingId, user.id)
+                  setConfirmingId(null)
+                  setToast('Submission confirmed successfully!')
+                  setTimeout(() => setToast(''), 3000)
+                }}
+                className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700"
+              >
+                Confirm Submission
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }
