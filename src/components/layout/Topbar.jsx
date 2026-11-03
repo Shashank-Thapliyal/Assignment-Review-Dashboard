@@ -1,7 +1,10 @@
 import { ChevronDown, Menu, Search } from 'lucide-react'
 import Brand from '../common/Brand'
+import { useAuth } from '../../hooks/useAuth'
 
-function Topbar({ onOpenNavigation }) {
+function Topbar({ user, onOpenNavigation }) {
+  const { logout } = useAuth()
+
   return (
     <header className="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-6 sm:px-10 max-lg:h-[68px] max-lg:px-4">
       <div className="flex items-center gap-1">
@@ -27,12 +30,15 @@ function Topbar({ onOpenNavigation }) {
         </label>
       </div>
       <button className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-left text-slate-500 hover:bg-slate-50" type="button">
-        <span className="grid size-9 place-items-center rounded-full bg-indigo-50 text-[13px] font-bold text-indigo-700">P1</span>
+        <span className="grid size-9 place-items-center rounded-full bg-indigo-50 text-[13px] font-bold text-indigo-700">{user.initials}</span>
         <span className="flex flex-col gap-0.5 max-sm:hidden">
-          <strong className="text-[13px] font-semibold text-slate-900">Professor 1</strong>
-          <small className="text-[11px] text-slate-500">Computer Science and Engineering</small>
+          <strong className="text-[13px] font-semibold text-slate-900">{user.name}</strong>
+          <small className="text-[11px] text-slate-500">{user.department}</small>
         </span>
         <ChevronDown size={16} aria-hidden="true" />
+      </button>
+      <button className="ml-2 text-xs font-medium text-slate-500 hover:text-indigo-600" type="button" onClick={logout}>
+        Log out
       </button>
     </header>
   )

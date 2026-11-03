@@ -4,6 +4,8 @@ import EmptyWorkspace from './components/common/EmptyWorkspace'
 import SummaryCard from './components/common/SummaryCard'
 import Sidebar from './components/layout/Sidebar'
 import Topbar from './components/layout/Topbar'
+import LoginPage from './features/auth/LoginPage'
+import { useAuth } from './hooks/useAuth'
 
 const summaryCards = [
   { label: 'Active assignments', icon: ClipboardList },
@@ -13,7 +15,12 @@ const summaryCards = [
 ]
 
 function App() {
+  const { user } = useAuth()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  if (!user) {
+    return <LoginPage />
+  }
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-900">
@@ -28,7 +35,7 @@ function App() {
       )}
 
       <div className="min-w-0 flex-1">
-        <Topbar onOpenNavigation={() => setSidebarOpen(true)} />
+        <Topbar user={user} onOpenNavigation={() => setSidebarOpen(true)} />
         <main className="mx-auto w-[calc(100%-80px)] max-w-[1152px] py-10 max-lg:w-[calc(100%-48px)] max-lg:py-7 max-sm:w-[calc(100%-32px)]">
           <div className="mb-7">
             <p className="mb-1.5 text-[13px] font-semibold text-indigo-600">Academic workspace</p>
