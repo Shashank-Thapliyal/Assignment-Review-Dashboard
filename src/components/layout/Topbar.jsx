@@ -2,7 +2,7 @@ import { ChevronDown, Menu, Search } from 'lucide-react'
 import Brand from '../common/Brand'
 import { useAuth } from '../../hooks/useAuth'
 
-function Topbar({ user, onOpenNavigation }) {
+function Topbar({ user, onOpenNavigation, onLogout }) {
   const { logout } = useAuth()
 
   return (
@@ -37,7 +37,10 @@ function Topbar({ user, onOpenNavigation }) {
         </span>
         <ChevronDown size={16} aria-hidden="true" />
       </button>
-      <button className="ml-2 text-xs font-medium text-slate-500 hover:text-indigo-600" type="button" onClick={logout}>
+      <button className="ml-2 text-xs font-medium text-slate-500 hover:text-indigo-600" type="button" onClick={() => {
+        logout()
+        onLogout()
+      }}>
         Log out
       </button>
     </header>

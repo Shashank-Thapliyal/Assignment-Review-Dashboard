@@ -8,7 +8,7 @@ const navigation = [
   { label: 'Calendar', icon: CalendarDays },
 ]
 
-function Sidebar({ isOpen, onClose }) {
+function Sidebar({ isOpen, onClose, userRole }) {
   return (
     <aside
       className={`fixed inset-y-0 left-0 z-20 flex w-64 shrink-0 -translate-x-full flex-col border-r border-slate-200 bg-white transition-transform duration-200 lg:static lg:translate-x-0 ${
@@ -27,7 +27,9 @@ function Sidebar({ isOpen, onClose }) {
         </button>
       </div>
       <nav className="flex-1 space-y-1 px-3 py-6" aria-label="Primary navigation">
-        <p className="mb-2 px-3 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">Workspace</p>
+        <p className="mb-2 px-3 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">
+          {userRole === 'admin' ? 'Professor workspace' : 'Student workspace'}
+        </p>
         {navigation.map(({ label, icon: Icon }, index) => (
           <button
             className={`flex w-full items-center gap-3 rounded-lg px-3 py-[11px] text-left text-sm font-medium transition-colors ${
