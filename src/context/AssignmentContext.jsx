@@ -32,6 +32,32 @@ export function AssignmentProvider({ children }) {
     localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(submissions))
   }, [submissions])
 
+  function createAssignment(data) {
+    const item = {
+      ...data,
+      id: `assignment-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+    setAssignments((prev) => [item, ...prev])
+  }
+
+  function updateAssignment(id, data) {
+    setAssignments((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, ...data, updatedAt: new Date().toISOString() } : item)),
+    )
+    if (data.assignedTo) {
+      setSubmissions((prev) =>
+        prev.filter((sub) => sub.assignmentId !== id || data.assignedTo.includes(sub.studentId)),
+      )
+    }
+  }
+
+  function deleteAssignment(id) {
+    setAssignments((prev) => prev.filter((item) => item.id !== id))
+    setSubmissions((prev) => prev.filter((sub) => sub.assignmentId !== id))
+  }
+
   function submitAssignment(assignmentId, studentId) {
     setSubmissions((current) => {
       if (current.some((item) => item.assignmentId === assignmentId && item.studentId === studentId)) {
@@ -51,7 +77,16 @@ export function AssignmentProvider({ children }) {
   }
 
   return (
-    <AssignmentContext.Provider value={{ assignments, submissions, setAssignments, setSubmissions, submitAssignment }}>
+    <AssignmentContext.Provider
+      value={{
+        assignments,
+        submissions,
+        createAssignment,
+        updateAssignment,
+        deleteAssignment,
+        submitAssignment,
+      }}
+    >
       {children}
     </AssignmentContext.Provider>
   )
