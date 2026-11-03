@@ -12,14 +12,23 @@ export function getSubmission(submissions, assignmentId, studentId) {
   )
 }
 
+export function isOverdue(dueDate, isSubmitted) {
+  return !isSubmitted && dueDate < new Date().toISOString().split('T')[0]
+}
+
+export function formatDate(dateString) {
+  if (!dateString) return '—'
+  return new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(
+    new Date(`${dateString.split('T')[0]}T00:00:00`),
+  )
+}
+
 export function getCompletionRate(assignment, submissions) {
-  if (!assignment.assignedTo.length) {
-    return 0
-  }
+  if (!assignment.assignedTo.length) return 0
+  const count = assignment.assignedTo.filter((sId) => getSubmission(submissions, assignment.id, sId)).length
+  return Math.round((count / assignment.assignedTo.length) * 100)
+}
 
-  const submittedCount = assignment.assignedTo.filter((studentId) =>
-    getSubmission(submissions, assignment.id, studentId),
-  ).length
-
-  return Math.round((submittedCount / assignment.assignedTo.length) * 100)
+export function getProfessorName(adminId) {
+  return adminId === 'admin-2' ? 'Professor 2' : 'Professor 1'
 }
