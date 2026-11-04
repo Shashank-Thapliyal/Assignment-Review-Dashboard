@@ -42,7 +42,7 @@ function AssignmentCard({ assignment, submissions, onEdit, onDelete }) {
         </div>
 
         {/* Progress bar showing class completion rate & actions */}
-        <div className="flex w-full items-center justify-between gap-4 pt-2.5 border-t border-slate-100 sm:w-64 sm:border-0 sm:pt-0 sm:self-center">
+        <div className="flex w-full flex-col gap-2 pt-2.5 border-t border-slate-100 sm:w-64 sm:flex-row sm:items-center sm:justify-between sm:border-0 sm:pt-0 sm:self-center">
           <div className="flex-1">
             <div className="flex justify-between text-xs font-medium text-slate-600 mb-1">
               <span>Completion</span>
@@ -53,7 +53,7 @@ function AssignmentCard({ assignment, submissions, onEdit, onDelete }) {
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center justify-end gap-1.5">
             <button
               type="button"
               onClick={() => setExpanded(!expanded)}
